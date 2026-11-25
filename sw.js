@@ -1,6 +1,6 @@
 /* Libreta Organizadora — service worker (funciona sin internet)
    Sube el número de versión cuando cambies archivos de la app. */
-const VERSION = 'libreta-v5';
+const VERSION = 'libreta-v4';
 const SHELL = [
   './', 'index.html', 'styles.css', 'app.js', 'manifest.json',
   'icon-192.png', 'icon-512.png', 'maskable-512.png'

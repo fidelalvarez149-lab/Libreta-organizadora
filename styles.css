@@ -179,3 +179,13 @@ h1,h2,h3,p{margin:0}
 }
 @media(max-width:380px){.big{font-size:32px}.cats{grid-template-columns:repeat(3,1fr)}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.dlg{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(3,6,18,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
+.dlg.on{opacity:1;pointer-events:auto}
+.dlg-box{width:100%;max-width:340px;background:var(--sheet);border:1px solid var(--line);border-radius:26px;padding:24px 22px 18px;box-shadow:var(--sh);transform:scale(.94);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.dlg.on .dlg-box{transform:none}
+.dlg-box h3{font-size:19px;margin-bottom:8px}
+.dlg-box p{color:var(--mut);font-size:15px;line-height:1.45}
+.dlg-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.dlg-acts .btn{padding:13px 10px}
+.btn.dlg-danger{background:var(--out);border-color:transparent;color:#fff}

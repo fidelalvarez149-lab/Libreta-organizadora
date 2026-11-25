@@ -461,6 +461,26 @@ function addPayment() {
   save(); renderDebt(); render(true);
 }
 
+/* ───────── Ventana de confirmación propia (reemplaza confirm del navegador) ───────── */
+let askDone = null;
+function ask(title, msg, okLabel, danger) {
+  return new Promise(res => {
+    if (askDone) askDone(false);
+    const box = $('#dlg');
+    box.innerHTML = `<div class="dlg-box" role="alertdialog" aria-modal="true" aria-labelledby="dlgT">
+      <h3 id="dlgT">${esc(title)}</h3><p>${esc(msg)}</p>
+      <div class="dlg-acts"><button class="btn" data-dlg="0">Cancelar</button><button class="btn ${danger ? 'dlg-danger' : 'acc'}" data-dlg="1">${esc(okLabel || 'Aceptar')}</button></div></div>`;
+    box.classList.add('on');
+    askDone = v => { box.classList.remove('on'); askDone = null; res(v); };
+    const cancel = box.querySelector('[data-dlg="0"]'); if (cancel) cancel.focus();
+  });
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-dlg]');
+  if (b && askDone) { e.stopPropagation(); askDone(b.dataset.dlg === '1'); }
+  else if (askDone && e.target.id === 'dlg') askDone(false);
+}, true);
+
 /* ───────── Acciones ───────── */
 const ACT = {
   nav: b => { ui.tab = b.dataset.id; window.scrollTo(0, 0); render(); },
@@ -474,8 +494,8 @@ const ACT = {
   'open-debt': b => openDebt(b.dataset.id),
   'edit-debt': b => { const d = db.debts.find(x => x.id === b.dataset.id); closeSheet(); openForm(null, d); },
   'toggle-debt': b => { const d = db.debts.find(x => x.id === b.dataset.id); d.closed = !d.closed; save(); renderDebt(); render(true); },
-  'del-debt': b => { if (!confirm('¿Eliminar esta deuda y su historial?')) return; db.debts = db.debts.filter(x => x.id !== b.dataset.id); save(); closeSheet(); render(true); toast('Deuda eliminada'); },
-  'del-tx': b => { if (!confirm('¿Eliminar este movimiento?')) return; db.tx = db.tx.filter(x => x.id !== b.dataset.id); save(); closeSheet(); render(true); toast('Movimiento eliminado'); },
+  'del-debt': async b => { if (!await ask('Eliminar deuda', 'Se borrará esta deuda con todo su historial de abonos.', 'Eliminar', true)) return; db.debts = db.debts.filter(x => x.id !== b.dataset.id); save(); closeSheet(); render(true); toast('Deuda eliminada'); },
+  'del-tx': async b => { if (!await ask('Eliminar movimiento', 'Este movimiento se borrará de tu libreta.', 'Eliminar', true)) return; db.tx = db.tx.filter(x => x.id !== b.dataset.id); save(); closeSheet(); render(true); toast('Movimiento eliminado'); },
   'del-pay': b => { const d = db.debts.find(x => x.id === D); d.payments = d.payments.filter(p => p.id !== b.dataset.id); if (leftOf(d) > 0) d.closed = false; save(); renderDebt(); render(true); },
   pay: addPayment,
   'close-sheet': closeSheet,
@@ -492,7 +512,7 @@ const ACT = {
   diag: runDiag,
   export: exportData,
   import: () => $('#fileIn').click(),
-  wipe: () => { if (!confirm('¿Borrar TODOS tus movimientos y deudas? Esto no se puede deshacer.')) return; if (!confirm('¿Seguro? Te recomendamos exportar un respaldo antes.')) return; db.tx = []; db.debts = []; save(); render(true); toast('Datos borrados'); }
+  wipe: async () => { if (!await ask('Borrar todo', 'Se eliminarán TODOS tus movimientos y deudas. No se puede deshacer.', 'Continuar', true)) return; if (!await ask('¿Estás seguro?', 'Te recomendamos exportar un respaldo antes de borrar.', 'Sí, borrar todo', true)) return; db.tx = []; db.debts = []; save(); render(true); toast('Datos borrados'); }
 };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
@@ -501,7 +521,7 @@ document.addEventListener('click', e => {
 $('#fab').addEventListener('click', ACT.add);
 $('#btnHide').addEventListener('click', ACT['toggle-hide']);
 sheetBg.addEventListener('click', closeSheet);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (askDone) askDone(false); else closeSheet(); } });
 
 document.addEventListener('input', e => {
   const id = e.target.id;
@@ -532,11 +552,11 @@ function exportData() {
 function importData(file) {
   if (!file) return;
   const r = new FileReader();
-  r.onload = () => {
+  r.onload = async () => {
     try {
       const j = JSON.parse(r.result);
       if (!Array.isArray(j.tx) || !Array.isArray(j.debts)) throw 0;
-      if (!confirm(`Se reemplazarán tus datos actuales por ${j.tx.length} movimientos y ${j.debts.length} deudas. ¿Continuar?`)) return;
+      if (!await ask('Importar respaldo', `Se reemplazarán tus datos actuales por ${j.tx.length} movimientos y ${j.debts.length} deudas.`, 'Importar', false)) return;
       db.tx = j.tx.filter(t => t && t.id && t.date && t.amount > 0);
       db.debts = j.debts.filter(d => d && d.id && d.amount > 0).map(d => ({ payments: [], ...d }));
       save(); render(true); toast('✅ Respaldo importado');
