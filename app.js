@@ -330,6 +330,11 @@ function viewSet() {
         ${!standalone && canInstall() ? '<button class="btn acc" data-act="install">Instalar</button>' : ''}</div>
       <div class="setrow"><div><b>Funciona sin internet</b><small>${swReady ? 'Lista: puedes registrar todo sin conexión.' : 'Se activa después de abrir la app una vez con internet.'}</small></div></div>
     </div>
+    <div class="card"><h2>Diagnóstico de instalación</h2>
+      <small style="display:block;line-height:1.4;margin-bottom:8px">Si no te aparece “Instalar app”, toca Revisar: te dice qué archivo falta.</small>
+      <button class="btn acc" data-act="diag">Revisar</button>
+      <div id="diag" style="margin-top:6px"></div>
+    </div>
     <div class="card"><h2>Respaldo de tus datos</h2>
       <small style="display:block;line-height:1.4;margin-bottom:6px">Tus datos viven solo en este dispositivo. Haz un respaldo de vez en cuando para no perderlos si cambias de teléfono o borras los datos del navegador.</small>
       <div class="setrow"><div><b>Exportar respaldo</b><small>${db.tx.length} movimientos · ${db.debts.length} deudas</small></div><button class="btn acc" data-act="export">Exportar</button></div>
@@ -484,6 +489,7 @@ const ACT = {
   theme: b => { db.set.theme = b.dataset.id; save(); render(true); },
   'toggle-hide': () => { db.set.hide = !db.set.hide; save(); render(true); },
   install: doInstall,
+  diag: runDiag,
   export: exportData,
   import: () => $('#fileIn').click(),
   wipe: () => { if (!confirm('¿Borrar TODOS tus movimientos y deudas? Esto no se puede deshacer.')) return; if (!confirm('¿Seguro? Te recomendamos exportar un respaldo antes.')) return; db.tx = []; db.debts = []; save(); render(true); toast('Datos borrados'); }
@@ -549,6 +555,39 @@ window.addEventListener('appinstalled', () => { deferred = null; render(true); t
 async function doInstall() {
   if (!deferred) return toast('Usa el menú del navegador → Instalar app');
   deferred.prompt(); await deferred.userChoice.catch(() => {}); deferred = null; render(true);
+}
+
+async function runDiag() {
+  const box = $('#diag'); if (!box) return;
+  box.innerHTML = '<small>Revisando…</small>';
+  const rows = []; let allOk = true;
+  const add = (ok, title, hint) => {
+    if (!ok) allOk = false;
+    rows.push(`<div class="setrow"><div><b>${ok ? '✅' : '❌'} ${title}</b>${!ok && hint ? `<small>${hint}</small>` : ''}</div></div>`);
+  };
+  add(window.isSecureContext, 'Conexión segura (https)', 'Abre la app desde el enlace https://…github.io/… en Chrome, no desde un archivo ni desde otra app.');
+  const link = document.querySelector('link[rel=manifest]');
+  let man = null;
+  try {
+    const r = await fetch(link.href, { cache: 'no-store' });
+    if (r.ok) man = await r.json();
+  } catch (e) { /* se reporta abajo */ }
+  add(!!man, 'Archivo manifest.json', 'Falta manifest.json en la raíz del repositorio, junto a index.html.');
+  if (man) {
+    for (const ic of (man.icons || [])) {
+      let ok = false;
+      try { ok = (await fetch(new URL(ic.src, link.href), { cache: 'no-store' })).ok; } catch (e) { /* sin conexión o falta */ }
+      add(ok, `Ícono ${ic.sizes}${ic.purpose === 'maskable' ? ' (maskable)' : ''}`, `Falta ${ic.src}. Sube la carpeta icons con los 3 PNG.`);
+    }
+  }
+  let reg = null;
+  try { reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null; } catch (e) { /* ignorar */ }
+  add(!!(reg && (reg.active || reg.waiting || reg.installing)), 'Modo sin internet (service worker)', 'Falta sw.js en la raíz o aún no se activa. Recarga la página con internet y vuelve a revisar.');
+  let last;
+  if (isStandalone()) last = '<div class="setrow"><div><b>✅ Ya estás usando la app instalada</b></div></div>';
+  else if (deferred) last = '<div class="setrow"><div><b>✅ Chrome ofrece instalarla</b><small>Toca el botón “Instalar” de arriba o el menú ⋮ → Instalar app.</small></div></div>';
+  else last = `<div class="setrow"><div><b>ℹ️ Chrome aún no ofrece instalar</b><small>${allOk ? 'Todo está bien. Cierra Chrome por completo y abre el enlace de nuevo. Si ya instalaste una versión anterior de esta app, desinstálala primero.' : 'Corrige lo marcado con ❌, sube los archivos y vuelve a abrir el enlace.'}</small></div></div>`;
+  box.innerHTML = rows.join('') + last;
 }
 
 /* ───────── Tema, estado de red, avisos ───────── */

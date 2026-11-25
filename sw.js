@@ -1,13 +1,19 @@
 /* Libreta Organizadora — service worker (funciona sin internet)
    Sube el número de versión cuando cambies archivos de la app. */
-const VERSION = 'libreta-v1';
+const VERSION = 'libreta-v2';
 const SHELL = [
-  './', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest',
+  './', 'index.html', 'styles.css', 'app.js', 'manifest.json',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'
 ];
 
+// Si un archivo falta en el servidor, el service worker igual se instala
+// (antes un solo 404 hacía fallar toda la instalación).
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(
+    caches.open(VERSION)
+      .then(c => Promise.all(SHELL.map(u => c.add(u).catch(() => null))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', e => {

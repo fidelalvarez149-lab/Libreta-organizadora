@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "Libreta Organizadora",
+  "short_name": "Libreta",
+  "description": "Ingresos, gastos y deudas en córdobas con conversión a dólares. Funciona sin internet.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0f1f",
+  "theme_color": "#0a0f1f",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Nuevo ingreso", "short_name": "Ingreso", "url": "./?add=in", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Nuevo gasto", "short_name": "Gasto", "url": "./?add=out", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Nueva deuda", "short_name": "Deuda", "url": "./?add=debt", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
