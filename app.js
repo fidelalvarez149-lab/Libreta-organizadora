@@ -577,7 +577,7 @@ async function runDiag() {
     for (const ic of (man.icons || [])) {
       let ok = false;
       try { ok = (await fetch(new URL(ic.src, link.href), { cache: 'no-store' })).ok; } catch (e) { /* sin conexión o falta */ }
-      add(ok, `Ícono ${ic.sizes}${ic.purpose === 'maskable' ? ' (maskable)' : ''}`, `Falta ${ic.src}. Sube la carpeta icons con los 3 PNG.`);
+      add(ok, `Ícono ${ic.sizes}${ic.purpose === 'maskable' ? ' (maskable)' : ''}`, `Falta ${ic.src}. Súbelo a GitHub en la misma carpeta que index.html.`);
     }
   }
   let reg = null;

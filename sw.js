@@ -1,9 +1,9 @@
 /* Libreta Organizadora — service worker (funciona sin internet)
    Sube el número de versión cuando cambies archivos de la app. */
-const VERSION = 'libreta-v2';
+const VERSION = 'libreta-v3';
 const SHELL = [
   './', 'index.html', 'styles.css', 'app.js', 'manifest.json',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-512.png'
+  'icon-192.png', 'icon-512.png', 'maskable-512.png'
 ];
 
 // Si un archivo falta en el servidor, el service worker igual se instala

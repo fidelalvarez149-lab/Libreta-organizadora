@@ -1,9 +1,12 @@
 LIBRETA ORGANIZADORA — cómo publicarla e instalarla
 ====================================================
 
-1) Sube TODOS estos archivos y la carpeta "icons" a tu repositorio de GitHub
-   (la misma forma que usaste con Ruta FAD) y activa GitHub Pages
-   (Settings → Pages → Deploy from a branch → main / root).
+Todos los archivos van JUNTOS, sueltos, en la raíz del repositorio (sin carpetas):
+  index.html, app.js, styles.css, sw.js, manifest.json,
+  icon-192.png, icon-512.png, maskable-512.png
+
+1) Sube esos 8 archivos a tu repositorio de GitHub (Add file → Upload files)
+   y activa GitHub Pages (Settings → Pages → Deploy from a branch → main / root).
 
 2) Abre el enlace https://TU-USUARIO.github.io/TU-REPO/ en Chrome del celular.
    Déjala cargar una vez con internet (así se guarda para usarla sin conexión).
@@ -15,8 +18,7 @@ LIBRETA ORGANIZADORA — cómo publicarla e instalarla
 
 Importante
 - Tus datos se guardan SOLO en el dispositivo. Usa Ajustes → "Exportar respaldo" de vez en cuando.
-- Si cambias archivos de la app, sube el número en sw.js (const VERSION = 'libreta-v3') para que los teléfonos se actualicen.
-- Si no te aparece "Instalar app": abre Ajustes dentro de la app → "Diagnóstico de instalación" → Revisar. Te dice qué archivo falta.
-- Archivos que deben estar en la raíz del repositorio: index.html, app.js, styles.css, sw.js, manifest.json.
-  Dentro de la carpeta icons/: icon-192.png, icon-512.png, maskable-512.png.
+- Si no te aparece "Instalar app": Ajustes dentro de la app → "Diagnóstico de instalación" → Revisar.
+  Te dice qué archivo falta.
+- Si cambias archivos de la app, sube el número en sw.js (const VERSION = 'libreta-v4') para que los teléfonos se actualicen.
 - No abras index.html con doble clic desde archivos: el modo sin internet y la instalación solo funcionan desde un enlace https.
