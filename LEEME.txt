@@ -1,0 +1,19 @@
+LIBRETA ORGANIZADORA — cómo publicarla e instalarla
+====================================================
+
+1) Sube TODOS estos archivos y la carpeta "icons" a tu repositorio de GitHub
+   (la misma forma que usaste con Ruta FAD) y activa GitHub Pages
+   (Settings → Pages → Deploy from a branch → main / root).
+
+2) Abre el enlace https://TU-USUARIO.github.io/TU-REPO/ en Chrome del celular.
+   Déjala cargar una vez con internet (así se guarda para usarla sin conexión).
+
+3) Instala:
+   - Android (Chrome): menú ⋮ → "Instalar app" (o "Agregar a pantalla de inicio").
+   - iPhone (Safari): botón Compartir → "Agregar a pantalla de inicio".
+   - PC (Chrome/Edge): ícono de instalar en la barra de direcciones.
+
+Importante
+- Tus datos se guardan SOLO en el dispositivo. Usa Ajustes → "Exportar respaldo" de vez en cuando.
+- Si cambias archivos de la app, sube el número en sw.js (const VERSION = 'libreta-v2') para que los teléfonos se actualicen.
+- No abras index.html con doble clic desde archivos: el modo sin internet y la instalación solo funcionan desde un enlace https.

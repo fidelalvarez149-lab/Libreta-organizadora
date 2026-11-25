@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Libreta Organizadora</title>
+<meta name="description" content="Ingresos, gastos y deudas en córdobas con conversión a dólares. Funciona sin internet.">
+<meta name="theme-color" content="#0b1020">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Libreta">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side">
+    <div class="brand"><span class="logo">📒</span><div><b>Libreta</b><small>Organizadora</small></div></div>
+    <nav id="navSide"></nav>
+    <div class="side-foot" id="sideRate"></div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1 id="title">Inicio</h1>
+        <p class="sub" id="subtitle"></p>
+      </div>
+      <div class="top-actions">
+        <span class="net" id="net"><i></i><em>En línea</em></span>
+        <button class="icon-btn" id="btnHide" aria-label="Ocultar montos" title="Ocultar montos">👁</button>
+      </div>
+    </header>
+    <section id="view"></section>
+  </main>
+  <nav class="tabbar" id="navBottom"></nav>
+  <button class="fab" id="fab" aria-label="Agregar">＋</button>
+</div>
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
